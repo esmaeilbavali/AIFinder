@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <title>{{ category.name }} - AI Finder</title>
+  </head>
+
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}"> AI Finder </a>
+      </div>
+    </nav>
+
+    <main class="container py-5">
+      <div class="mb-4">
+        <a href="{% url 'home' %}" class="text-decoration-none"> Home </a>
+        <span class="text-muted"> / {{ category.name }}</span>
+      </div>
+
+      <div class="text-center mb-5">
+        <h1 class="fw-bold">{{ category.name }}</h1>
+
+        <p class="text-muted">
+          Explore AI tools in {{ category.name }} category.
+        </p>
+
+        <span class="badge text-bg-primary fs-6">
+          {{ total_results }} Tools
+        </span>
+      </div>
+
+      <div class="row g-4">
+        {% for tool in tools %}
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm border-0">
+            {% if tool.image %}
+            <img
+              src="{{ tool.image.url }}"
+              class="card-img-top"
+              alt="{{ tool.name }}"
+              style="height: 200px; object-fit: contain"
+            />
+            {% endif %}
+
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{ tool.name }}</h5>
+
+              <p class="card-text text-muted">
+                {{ tool.description|truncatewords:25 }}
+              </p>
+
+              <span class="badge text-bg-primary">
+                {{ tool.get_pricing_type_display }}
+              </span>
+
+              <hr />
+
+              <a
+                href="{% url 'tool_detail' tool.slug %}"
+                class="btn btn-primary w-100"
+              >
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {% empty %}
+
+        <div class="col-12 text-center py-5">
+          <h4 class="text-muted">No tools found!</h4>
+
+          <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+            Back to Home
+          </a>
+        </div>
+
+        {% endfor %}
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-4">
+      <p class="mb-0">AI Finder - Discover & Explore AI Tools</p>
+    </footer>
+  </body>
+</html>
