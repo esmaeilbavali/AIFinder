@@ -3,21 +3,22 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    # path("", views.home, name="home"),
+    path("", views.HomeView.as_view(), name="home"),
 
-        path(
+    path(
         "tools/<slug:slug>/",
-        views.tool_detail,
+        views.ToolDetailView.as_view(),
         name="tool_detail"
-        ),
-        path(
-            "categories/<slug:slug>/",
-            views.category_detail,
-            name="category_detail"
-        ),
-        path(
-        "audiences/<slug:slug>/",
-        views.audience_detail,
-        name="audience_detail"
-        ),
+    ),
+    path(
+        "categories/<slug:slug>/",
+        views.CategoryDetailView.as_view(),
+        name="category_detail"
+    ),
+    path(
+    "audiences/<slug:slug>/",
+    views.AudienceDetailView.as_view(),
+    name="audience_detail"
+    ),
 ]
