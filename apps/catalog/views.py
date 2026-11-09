@@ -5,6 +5,15 @@ from .models import AITool
 from apps.taxonomy.models import Category, Audience
 from django.shortcuts import render, get_object_or_404
 
+from .selectors import (
+    search_tools,
+    get_category_by_slug,
+    get_audience_by_slug,
+    get_tools_by_category,
+    get_tools_by_audience,
+)
+
+
 class HomeView(ListView):
 
     model = AITool
@@ -41,47 +50,13 @@ class HomeView(ListView):
             self.sort_by = "newest"
 
         # Base queryset
-        queryset = AITool.objects.filter(
-            is_active = True
-        ).prefetch_related(
-            "categories",
-            "audiences"
+        return search_tools(
+            query=self.query,
+            category_id=self.category_id,
+            audience_id=self.audience_id,
+            pricing_type=self.pricing_type,
+            sort_by=self.sort_options[self.sort_by]
         )
-
-        # Search
-        if self.query:
-            queryset = queryset.filter(
-                Q(name__icontains=self.query) |
-                Q(description__icontains=self.query)
-            )
-
-        # Category filter
-        if self.category_id:
-            queryset = queryset.filter(
-                categories__id=self.category_id
-            )
-
-        # Audience filter
-        if self.audience_id:
-            queryset = queryset.filter(
-                audiences__id=self.audience_id
-            )
-
-        # Pricing filer
-        if self.pricing_type:
-            queryset = queryset.filter(
-                pricing_type=self.pricing_type
-            )
-
-        # Remove duplicate result
-        queryset = queryset.distinct()
-
-        # Sorting
-        queryset = queryset.order_by(
-            self.sort_options[self.sort_by]
-        )
-
-        return queryset
 
     def get_context_data(self, **kwargs):
 
@@ -160,18 +135,11 @@ class CategoryDetailView(ListView):
     context_object_name = "tools"
 
     def get_queryset(self):
-        self.category = get_object_or_404(
-            Category,
-            slug=self.kwargs["slug"]
-        )
+        self.category = get_category_by_slug(
+            self.kwargs["slug"]
+            )
 
-        return AITool.objects.filter(
-            is_active=True,
-            categories=self.category
-        ).prefetch_related(
-            "categories",
-            "audiences"
-        ).order_by("-id")
+        return get_tools_by_category(self.category)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -187,18 +155,11 @@ class AudienceDetailView(ListView):
     context_object_name = "tools"
 
     def get_queryset(self):
-        self.audience = get_object_or_404(
-            Audience,
-            slug=self.kwargs["slug"]
+        self.audience = get_audience_by_slug(
+            self.kwargs["slug"]
         )
 
-        return AITool.objects.filter(
-            is_active=True,
-            audiences=self.audience
-        ).prefetch_related(
-            "categories",
-            "audiences"
-        ).order_by("-id")
+        return get_tools_by_audience(self.audience)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

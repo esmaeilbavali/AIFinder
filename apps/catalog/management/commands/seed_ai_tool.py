@@ -5,9 +5,12 @@ from faker import Faker
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import JSONField
+from django.utils.text import slugify
 
 from apps.catalog.models import AITool
 from apps.taxonomy.models import Category, Audience
+
+from apps.catalog.services import create_ai_tool
 
 
 fake = Faker()
@@ -109,21 +112,24 @@ class Command(BaseCommand):
                 if AITool.objects.filter(slug=slug).exists():
                     continue
 
-                tool = self.create_tool(name, slug)
-
-                tool.categories.set(
-                    random.sample(
-                        categories,
-                        k=random.randint(1, len(categories))
-                    )
+                selected_categories = random.sample(
+                    categories,
+                    k=random.randint(1, len(categories))
                 )
 
-                tool.audiences.set(
-                    random.sample(
-                        audiences,
-                        k=random.randint(1, len(audiences))
-                    )
+                selected_audiences = random.sample(
+                    audiences,
+                    k=random.randint(1, len(audiences))
                 )
+
+                self.create_tool(
+                    name,
+                    slug,
+                    selected_categories,
+                    selected_audiences
+                )
+
+                
 
                 created_count += 1
 
@@ -143,7 +149,7 @@ class Command(BaseCommand):
 
         for name, slug in items:
 
-            obj, created = model.objects.get_or_create(
+            obj, ـ = model.objects.get_or_create(
                 slug=slug,
                 defaults={"name": name}
             )
@@ -153,12 +159,9 @@ class Command(BaseCommand):
         return objects
 
     def make_slug(self, name):
-
-        from django.utils.text import slugify
-
         return slugify(name)
 
-    def create_tool(self, name, slug):
+    def create_tool(self, name, slug, categories, audiences):
 
         pricing_choices = [
             choice[0]
@@ -198,4 +201,8 @@ class Command(BaseCommand):
                     for _ in range(3)
                 ])
 
-        return AITool.objects.create(**tool_data)
+        return create_ai_tool(
+            tool_data=tool_data,
+            categories=categories,
+            audiences=audiences
+        )
