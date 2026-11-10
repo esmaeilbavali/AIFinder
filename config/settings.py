@@ -41,6 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # third-prty Apps
+    'rest_framework',
+
+    # DRF
+    "apps.api.apps.ApiConfig",
+
     # Local Apps
     "apps.catalog.apps.CatalogConfig",
     "apps.taxonomy.apps.TaxonomyConfig",
