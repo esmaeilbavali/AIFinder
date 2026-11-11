@@ -23,8 +23,10 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2@=a#avo=p=#9$5mgw1-yz(%s607^ehv=$cqysy5353k$@%8z3'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY is not set in environment variables.")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
 
     # third-prty Apps
     'rest_framework',
+    "drf_spectacular",
 
     # DRF
     "apps.api.apps.ApiConfig",
@@ -145,3 +148,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AI Finder API",
+    "DESCRIPTION": "API documentation for AI Finder project.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+
+
+    "REDOC_DIST": "https://cdn.jsdelivr.net/npm/redoc@2.5.0",
+
+}

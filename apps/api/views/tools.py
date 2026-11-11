@@ -6,11 +6,15 @@ from apps.catalog.selectors import get_active_tools
 from apps.api.serializers import ToolSerializer
 from apps.api.serializers.filters import ToolFilterSerializer
 
+from apps.api.pagination import ToolPagination
+
 class ToolListView(generics.ListAPIView):
 
     serializer_class = ToolSerializer
 
     permission_classes = [AllowAny]
+
+    pagination_class = ToolPagination
 
     filter_backends = [
         filters.SearchFilter,
