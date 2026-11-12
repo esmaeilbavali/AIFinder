@@ -1,281 +1,139 @@
-<img width="1552" height="1168" alt="aifinder" src="https://github.com/user-attachments/assets/8d486f7f-57a5-409d-8618-52d43b154a96" />
-
----
-
-<img width="2531" height="1221" alt="aifinderAdmin" src="https://github.com/user-attachments/assets/ba4b9dd1-2d25-42d0-9664-519f2a237101" />
-
-
-
-
-
-
-
 # AI Finder
 
-**AI Finder** is an AI tools discovery and directory platform built with Django and PostgreSQL.
+AI Finder is a directory of AI tools designed to help users discover and explore artificial intelligence tools based on their categories, target audiences, pricing models, and features.
 
-The platform helps users discover, search, and explore different AI tools based on categories, target audiences, and pricing models.
-
-Inspired by AI tools directories such as [Aixploria](https://www.aixploria.com/).
-
----
+The project provides both a Django-based web interface and a RESTful API.
 
 ## Features
 
-### Current Features
-
-- Browse available AI tools
-- View detailed information about each AI tool
+- Browse AI tools
+- View detailed information about each tool
 - Search tools by name and description
-- Filter tools by category
-- Filter tools by target audience
-- Filter tools by pricing model
+- Filter tools by category, audience, and pricing type
 - Combine multiple filters
-- Sort tools by:
-  - Newest
-  - Oldest
-  - Name (A–Z)
-  - Name (Z–A)
-  - Pricing
-- Paginate search results
-- View dedicated category pages
-- View dedicated audience pages
+- Sort tools by different fields
+- Paginate tool listings
+- Browse tools by category and audience
 - Display tool images
-- Generate sample data using Django management commands
-
----
+- Seed the database with sample data using Faker
+- Read-only REST API built with Django REST Framework
+- API documentation with Swagger UI and ReDoc
 
 ## Technology Stack
 
-| Technology | Version |
+| Technology | Version / Usage |
 |---|---|
-| Python | 3.13 |
-| Django | 5.2 |
-| PostgreSQL | 18 |
-| Faker | data generation |
-| HTML / CSS | Frontend |
-| Bootstrap | True |
-
----
+| Python | 3.12+ |
+| Django | 6.1.3 |
+| Django REST Framework | 3.18.3 |
+| drf-spectacular | 0.30.0 |
+| SQLite | Development database |
+| Faker | Sample data generation |
+| Pillow | Image processing |
+| Bootstrap | Frontend styling |
 
 ## Project Structure
 
-The project follows a modular Django architecture.
-
 ```text
-AI-Finder/
-│
+AIFinder/
 ├── apps/
+│   ├── api/
+│   │   ├── serializers/
+│   │   ├── views/
+│   │   ├── filters.py
+│   │   ├── pagination.py
+│   │   └── urls.py
 │   ├── catalog/
 │   │   ├── management/
 │   │   │   └── commands/
 │   │   │       └── seed_ai_tool.py
 │   │   ├── models.py
-│   │   ├── views.py
-│   │   └── ...
-│   │
+│   │   ├── selectors.py
+│   │   ├── services.py
+│   │   ├── urls.py
+│   │   └── views.py
 │   └── taxonomy/
 │       ├── models.py
 │       └── ...
-│
+├── config/
+│   ├── settings.py
+│   └── urls.py
 ├── templates/
-│   └── catalog/
-│
-├── media/
 ├── static/
+├── media/
 ├── manage.py
 ├── requirements.txt
-├── .gitignore
+├── .env-example
 └── README.md
 ```
 
-*Note: This is a simplified representation of the project structure.*
-
----
-
 ## Requirements
 
-Before installing the project, make sure you have the following software installed:
-
-- Python 3.13
-- PostgreSQL 18
-- Git
+- Python 3.12 or newer
 - pip
+- Git
 
----
+## Installation
 
-## Installation and Setup
-
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-finder.git
-
-cd ai-finder
+git clone git@github.com:esmaeilbavali/AIFinder.git
+cd AIFinder
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username.
-
-### 2. Create a Virtual Environment
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate the virtual environment.
+Activate it:
 
-**Windows (PowerShell):**
-
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-**Windows (CMD):**
-
-```cmd
-venv\Scripts\activate
-```
-
-**Linux / macOS:**
+**Linux / macOS**
 
 ```bash
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+**Windows**
 
 ```bash
-python -m pip install --upgrade pip
+venv\Scripts\activate
+```
 
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-If Faker is not already included in the requirements:
+### 4. Configure environment variables
+
+Create your local `.env` file from the example:
 
 ```bash
-pip install Faker
+cp .env-example .env
 ```
 
-### 4. Configure PostgreSQL
-
-Create a PostgreSQL database for the project.
-
-Open the PostgreSQL command-line tool or pgAdmin and execute:
-
-```sql
-CREATE DATABASE ai_finder;
-```
-
-Configure your database connection in the Django settings file.
-
-Example database configuration:
-
-```python
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ai_finder",
-        "USER": "YOUR_DB_USERNAME",
-        "PASSWORD": "YOUR_DB_PASSWORD",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-```
-
-Replace the username and password with your PostgreSQL credentials.
-
-### 5. Apply Database Migrations
+Generate a new Django secret key:
 
 ```bash
-python manage.py makemigrations
-
-python manage.py migrate
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-### 6. Generate Sample Data
+Set the generated key as the value of `SECRET_KEY` in `.env`.
 
-AI Finder includes a custom Django management command for generating sample AI tools and related data.
+The project currently uses SQLite as its database. PostgreSQL environment variables are included as placeholders for possible future configuration.
 
-Run:
+**Important:** Never commit your actual `.env` file or expose your secret key.
+
+### 5. Apply migrations
 
 ```bash
-python manage.py seed_ai_tool
-```
 
-This command generates sample records for development and testing.
+## Screenshots
 
-### 7. Create a Superuser
+![AI Finder Homepage](https://github.com/user-attachments/assets/8d486f7f-57a5-409d-8618-52d43b154a96)
 
-```bash
-python manage.py createsuperuser
-```
-
-Follow the instructions to create an administrator account.
-
-### 8. Run the Development Server
-
-```bash
-python manage.py runserver
-```
-
-Open the following address in your browser:
-
-http://127.0.0.1:8000/
-
----
-
-## Useful Django Commands
-
-| Command | Description |
-|---|---|
-| `python manage.py runserver` | Start the development server |
-| `python manage.py makemigrations` | Create database migrations |
-| `python manage.py migrate` | Apply migrations |
-| `python manage.py createsuperuser` | Create an administrator |
-| `python manage.py shell` | Open Django shell |
-| `python manage.py seed_ai_tool` | Generate sample data |
-| `python manage.py check` | Check the project configuration |
-| `python -m django --version` | Display Django version |
-
----
-
-## Development Notes
-
-- The project uses PostgreSQL as its primary database.
-- Django applications are organized under the `apps/` directory.
-- Sample data is generated using a custom management command.
-- Uploaded images are stored in the media directory.
-- Environment variables and sensitive configuration files should not be committed to Git.
-
----
-
-## Roadmap
-
-Planned features for future development:
-
-- User authentication and profiles
-- AI tool reviews and ratings
-- Advanced search functionality
-- More filtering options
-- Favorites and bookmarks
-- AI tool comparison
-- Admin dashboard improvements
-- SEO optimization
-- REST API
-- Responsive UI improvements
-
----
-
-## Contributing
-
-Contributions, suggestions, and bug reports are welcome.
-
-If you find an issue or have an idea for improvement, feel free to open an issue or submit a pull request.
-
----
-
-## License
-
-This project is currently under development. A license has not yet been selected.
-
+![AI Finder Admin](https://github.com/user-attachments/assets/ba4b9dd1-2d25-42d0-9664-519f2a237101)
